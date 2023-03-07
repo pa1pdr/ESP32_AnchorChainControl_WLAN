@@ -31,8 +31,8 @@
 // Wifi: Select AP or Client
 
 #define WiFiMode_AP_STA 1            // Defines WiFi Mode 0 -> AP (with IP:192.168.4.1 and  1 -> Station (client with IP: via DHCP)
-const char *ssid = "Zevecote";     // Set WLAN name
-const char *password = "1023bm_cafebabe_";  // Set password
+const char *ssid = "..";     // Set WLAN name
+const char *password = "...";  // Set password
 
 
 WebServer server(80);                // Web Server at port 80
@@ -54,6 +54,9 @@ portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;  // To lock/unlock interrupt
 #define Chain_Up_Pin 14              // GPIO pin 14 for Chain Up Relay
 #define Chain_Down_Pin 12            // GPIO pin 12 for Chain Down Relay
 #define Fake_Counter_Pin 27          // Fake pulse for demo/debug purposes
+#define Chain_Goes_Up 25
+#define Chain_Goes_Down 26
+
 
 int UpDown = 1;                      // 1 =  Chain down / count up, -1 = Chain up / count backwards
 int OnOff = 0;                       // Relay On/Off - Off = 0, On = 1
@@ -157,6 +160,10 @@ void setup() {
   // Init Chain Count measure with interrupt
   pinMode(Chain_Counter_Pin, INPUT_PULLUP); // Sets pin input with pullup resistor
   attachInterrupt(digitalPinToInterrupt(Chain_Counter_Pin), handleInterrupt, FALLING); // Attaches pin to interrupt on falling edge
+  
+  pinMode(Chain_Goes_Down, INPUT_PULLUP);   // Sets pin input with pullup resistor
+  pinMode(Chain_Goes_Up, INPUT_PULLUP);     // Sets pin input with pullup resistor
+
 
   // Init serial
   Serial.begin(115200);
@@ -266,7 +273,7 @@ void Event_TUp() {                          // Handle target UP request
   if (desiredLength < (MAX_CHAIN_LENGTH - TARGET_INCREMENT)) desiredLength += TARGET_INCREMENT;
   server.sendHeader("Cache-Control", "no-cache");
   server.send(200, "text/plain", String (desiredLength));
-  vTaskDelay (700/portTICK_PERIOD_MS);
+  vTaskDelay (700/portTICK_PERIOD_MS);    // delay a bit so the operator sees the needle go up
   Serial.printf("Target Up %d m\n", desiredLength);
 
 }
@@ -278,9 +285,8 @@ void Event_TDown() {                         // Handle target Down request
   if (desiredLength >= TARGET_INCREMENT) desiredLength -= TARGET_INCREMENT;
   server.sendHeader("Cache-Control", "no-cache");
   server.send(200, "text/plain", String (desiredLength));
-  vTaskDelay (700/portTICK_PERIOD_MS); 
+  vTaskDelay (700/portTICK_PERIOD_MS); // delay a bit so the operator sees the needle go down
   Serial.printf("Target Down %d m\n", desiredLength);
-
 }
 
 void Event_Index() {                         // If "http://<ip address>/" requested
@@ -354,6 +360,12 @@ void loop() {
 #endif
 
 
+  // reflect the read pins.
+   if (digitalRead (Chain_Goes_Up) == LOW) {
+    UpDown = -1;          // contrary to the assumed dropping of the anchor (turning gypsy) we signal the anchor is actually going up
+  } else {
+    UpDown = 1;           // otherwise assume the chain is going down (free fall or using the windlass)
+  }
  
   if (ChainCounter != LastSavedCounter) {                          // Store Chain Counter to nonvolatile storage (if changed)
     preferences.begin("nvs", false);

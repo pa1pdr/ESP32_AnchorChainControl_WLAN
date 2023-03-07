@@ -1,5 +1,8 @@
 # ESP32 Anchor Chain Remote Contol / Counter via WLAN
 
+This repo is copied from the original author AK-Homberger, whom deserves all credits for the original design, hard work etc.
+I merely enhanced it here and there and made it suitable for my own purposes.
+
 This repository shows how to remotely control the achor chain relay via WLAN from phone/tablet.
 Anchor chain events from the chain sensor are measured and presented on the phone/tablet.
 
@@ -20,6 +23,9 @@ To control the anchor chain relay just press:
 - "Up" for anchor up
 - "Stop" for Stop
 - "Reset" to reset the chain counter to zero
+- "T-5" to decrease the target length  with 5m
+- "T+5" to increase the target length  with 5m
+
 
 Features:
 - Saftey stop to stop "anchor up" two events before reaching zero (can be changed in code with SAFETY_STOP).
@@ -28,6 +34,7 @@ Features:
 - Watchdog timer to detect blocking chain. Engine stops if no events are detected within 1 second for up/down command.
 - Current Chain Counter is stored in nonvolatile memory. ESP32 can be switched off after anchoring (counter is restored after new start).
 - Demo mode to check functionality without having a windlass / chain counter connected to ESP32 (set ENABLE_DEMO to 1).
+- Enhanced demo mode will use a fake pulse, simulating a rotating gypsy (set ENABLE_DEMO to 2).
 
 ![Picture2](https://github.com/AK-Homberger/ESP32_ChainCounter_WLAN/blob/master/ESP32ChainCounterWLAN_OC_Relais.png)
 
