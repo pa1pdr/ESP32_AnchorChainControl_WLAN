@@ -14,6 +14,7 @@
 
 // Anchor Chain Remote Control / Chain Counter with WLAN.
 // Version 1.0, 14.02.2020, AK-Homberger
+// Version 2.0, 07.03.2022, PA1PDR
 
 #include <WiFi.h>
 #include <WiFiClient.h>
