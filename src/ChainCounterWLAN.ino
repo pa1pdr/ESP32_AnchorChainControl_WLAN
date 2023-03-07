@@ -31,8 +31,8 @@
 // Wifi: Select AP or Client
 
 #define WiFiMode_AP_STA 1            // Defines WiFi Mode 0 -> AP (with IP:192.168.4.1 and  1 -> Station (client with IP: via DHCP)
-const char *ssid = "Zevecote";     // Set WLAN name
-const char *password = "1023bm_cafebabe_";  // Set password
+const char *ssid = "..";     // Set WLAN name
+const char *password = "...";  // Set password
 
 
 WebServer server(80);                // Web Server at port 80
