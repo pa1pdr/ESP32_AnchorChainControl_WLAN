@@ -1,0 +1,113 @@
+
+
+
+; PlatformIO Project Configuration File
+;
+;   Build options: build flags, source filter
+;   Upload options: custom upload port, speed and extra flags
+;   Library options: dependencies, extra library storages
+;   Advanced options: extra scripting
+;
+; Please visit documentation for the other options and examples
+; https://docs.platformio.org/page/projectconf.html
+
+; NOTE: This is an example platformio.ini file to be used as a template for
+; derived projects. Do not use the file within the SensESP directory tree but
+; instead create a new project in PlatformIO and copy this file and one of the
+; example source files there.
+
+[platformio]
+;set default_envs to whichever board(s) you use. Build/Run/etc processes those envs
+default_envs = 
+;   esp32dev
+;   d1_mini
+;   esp-wrover-kit
+;  lolin32_lite
+   ttgo-1
+
+[env]
+; Global data for all [env:***]
+framework = arduino
+lib_ldf_mode = deep+
+monitor_speed = 115200
+lib_deps = 
+	Adafruit BME280 Library
+   DallasTemperature
+   OneWire
+;	Adafruit SSD1306
+	ttlappalainen/NMEA2000-library
+	ttlappalainen/NMEA2000_esp32
+   https://github.com/ESP32Home/TFT_eSPI_ttgo_t-display.git
+   https://github.com/ESP32Home/GfxUI.git
+   
+
+[espressif8266_base]
+;this section has config items common to all ESP8266 boards
+platform = espressif8266
+board_build.ldscript = eagle.flash.4m1m.ld
+build_flags =
+   -Wall
+   -Wno-reorder
+
+[env:d1_mini]
+extends = espressif8266_base
+board = d1_mini
+board_build.f_cpu = 160000000L
+upload_resetmethod = nodemcu
+build_flags =
+   ${espressif8266_base.build_flags}
+   ; Verify that this is the correct pin number for your board!
+   -D LED_BUILTIN=2
+upload_speed = 460800  
+; uncomment and change these if PlatformIO can't auto-detect
+; the ports
+;upload_port = /dev/tty.SLAB_USBtoUART
+;monitor_port = /dev/tty.SLAB_USBtoUART
+
+[espressif32_base]
+;this section has config items common to all ESP32 boards
+platform = espressif32
+build_unflags = -Werror=reorder
+board_build.partitions = min_spiffs.csv
+monitor_filters = esp32_exception_decoder
+
+[env:esp32dev]
+extends = espressif32_base
+board = esp32dev
+; Verify that this is the correct pin number for your board!
+build_flags = 
+   -D LED_BUILTIN=2
+; uncomment and change these if PlatformIO can't auto-detect
+; the ports
+;upload_port = /dev/tty.SLAB_USBtoUART
+;monitor_port = /dev/tty.SLAB_USBtoUART
+
+[env:esp-wrover-kit]
+extends = espressif32_base
+board = esp-wrover-kit
+upload_speed = 460800
+
+; PlatformIO Project Configuration File
+;
+;   Build options: build flags, source filter
+;   Upload options: custom upload port, speed and extra flags
+;   Library options: dependencies, extra library storages
+;   Advanced options: extra scripting
+;
+; Please visit documentation for the other options and examples
+; https://docs.platformio.org/page/projectconf.html
+
+[env:lolin32_lite]
+extends = espressif32_base
+;platform = espressif32
+board = lolin32_lite
+framework = arduino
+
+[env:ttgo-1]
+platform = espressif32
+board = ttgo-t1
+
+board_build.mcu = esp32
+board_build.f_cpu = 240000000L
+
+upload_port = /dev/cu.usb*
