@@ -30,7 +30,7 @@
 #define SCREEN_WIDTH 240
 #define SCREEN_HEIGHT 135
 #define ENABLE_DEMO 0                // Set to 1 to enable Demo Mode with up/down counter, set to 2 for pulsing on the fake counter pin, simulating a rotating gipsy
-#define SAFETY_STOP 2                // Defines safety stop for chain up. Stops defined number of events before reaching zero
+#define SAFETY_STOP 3                // Defines safety stop for chain up. Stops defined number of events before reaching zero
 #define MAX_CHAIN_LENGTH 80          // Define maximum chan length. Relay off after the value is reached
 #define TARGET_INCREMENT 5           // amount to alter the desiredlength in meters per keypress
 #define WATCHDOG_TIME 1500           // time-out im ms for inactivity of windlass & Web connection
