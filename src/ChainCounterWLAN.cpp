@@ -33,7 +33,8 @@
 #define SAFETY_STOP 3                // Defines safety stop for chain up. Stops defined number of events before reaching zero
 #define MAX_CHAIN_LENGTH 80          // Define maximum chan length. Relay off after the value is reached
 #define TARGET_INCREMENT 5           // amount to alter the desiredlength in meters per keypress
-#define WATCHDOG_TIME 1500           // time-out im ms for inactivity of windlass & Web connection
+#define WATCHDOG_TIME 3000           // time-out im ms for inactivity of windlass & Web connection
+#define DEBOUNCER_MS 200              // time in ms to ignore pulses to avoid bouncing jitter
 
 // Wifi: Select AP or Client
 
@@ -46,7 +47,7 @@ Preferences preferences;             // Nonvolatile storage on ESP32 - To store 
 
 // Chain Counter
 
-#define Chain_Calibration_Value 0.33 // Translates counter impuls to meter 0,33 m per pulse
+#define Chain_Calibration_Value 0.335 // Translates counter impuls to meter 0,33 m per pulse
 unsigned long Last_int_time = 0;     // Time of last interrupt
 unsigned long Last_event_time = 0;   // Time of last event for engine watchdog
 int ChainCounter = 0;                // Counter for chain events
@@ -128,7 +129,7 @@ bool stopCriterionReached () {
 //=======================================
 void IRAM_ATTR handleInterrupt() {
 
-  if (millis() > Last_int_time + 250) {  // Debouncing. No new events for 10 milliseconds
+  if (millis() > Last_int_time + DEBOUNCER_MS) {  // Debouncing. No new events for 10 milliseconds
 
     portENTER_CRITICAL_ISR(&mux);
 
@@ -502,6 +503,6 @@ void loop() {
  
   ArduinoOTA.handle();
 
-  vTaskDelay (50/portTICK_PERIOD_MS);
+  // vTaskDelay (50/portTICK_PERIOD_MS);
 
 }
